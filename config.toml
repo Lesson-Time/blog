@@ -1,5 +1,5 @@
 baseURL = "https://lesson-time.github.io/blog/"
-languageCode = "en-us"
-title = "My New Hugo Site"
+languageCode = "ja-jp"
+title = "TO-ON Developer Blog"
 theme = "ananke"
 publishDir = "docs"
