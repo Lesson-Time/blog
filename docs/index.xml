@@ -1,23 +1,52 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>My New Hugo Site</title>
+    <title>TO-ON Developer Blog</title>
     <link>https://lesson-time.github.io/blog/</link>
-    <description>Recent content on My New Hugo Site</description>
+    <description>Recent content on TO-ON Developer Blog</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
-    <lastBuildDate>Wed, 07 Feb 2018 15:50:11 +0900</lastBuildDate>
+    <language>ja-jp</language>
+    <lastBuildDate>Wed, 07 Feb 2018 18:57:41 +0900</lastBuildDate>
     
 	<atom:link href="https://lesson-time.github.io/blog/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
-      <title>My First Post</title>
-      <link>https://lesson-time.github.io/blog/posts/my-first-post/</link>
-      <pubDate>Wed, 07 Feb 2018 15:50:11 +0900</pubDate>
+      <title>Kubernetes で ingress controller を使って https (TLS) 接続をするチュートリアル</title>
+      <link>https://lesson-time.github.io/blog/posts/tutorial-for-k8s-tls-setting/</link>
+      <pubDate>Wed, 07 Feb 2018 18:57:41 +0900</pubDate>
       
-      <guid>https://lesson-time.github.io/blog/posts/my-first-post/</guid>
-      <description>hello world</description>
+      <guid>https://lesson-time.github.io/blog/posts/tutorial-for-k8s-tls-setting/</guid>
+      <description>弊社ではKubernetesでDocker Containerを管理しています。
+レッスンタイムもそうですが、常時HTTPS接続をするために内部にnginx proxy の役割をするServiceを使っていました。
+ingress を使うと何がメリットかというと
+- 一つのingressで複数Serviceにまたがった設定ができる。
+- Serviceとして管理しないので分けて考えれる
+- Google 推奨の構成
+といったところですね。
+このチュートリアルでは
+1, ingressを使ってアプリケーションを公開する
+2, TLSの設定をして、https接続する。
+の二つを行いたいと思います。
+1, ingressを使ってアプリケーションを公開する 1.1, サービスを立ち上げる まずはingressを使わないでサービスを立ち上げれるかチェックします。
+こちらの公式ページがとてもわかりやすいのですが、Deployment から exposeして外部に公開してもいいし、Serviceを記述して公開してもいいです。
+例えばこういうDeploymentがあるとします。
+sandboxというnamespaceに一つアプリケーションを8080で公開する記述がされています。
+Rails だと3000ですね。
+apiVersion: apps/v1beta1 kind: Deployment metadata: name: test-app namespace: sandbox spec: replicas: 1 revisionHistoryLimit: 3 template: metadata: namespace: sandbox labels: run: test-app version: latest spec: containers: - name: test-app image: asia.gcr.io/project-id/image_name:latest ports: - containerPort: 8080  Terminal で</description>
+    </item>
+    
+    <item>
+      <title>GCPで 「Request had insufficient authentication scopes.」と怒られた時の対処法</title>
+      <link>https://lesson-time.github.io/blog/posts/insufficient-authentication-scopes/</link>
+      <pubDate>Wed, 07 Feb 2018 18:49:38 +0900</pubDate>
+      
+      <guid>https://lesson-time.github.io/blog/posts/insufficient-authentication-scopes/</guid>
+      <description>GCEでオープンソースの Drone.io を動かしていて、そこから GKE にアクセスしています。
+今回新しく cluster を作成して、そこにdroneのGCEからアクセスしようと思ったのですが、以下のように怒られました。
+$ gcloud container clusters get-credentials test-cluster (gcloud.container.clusters.get-credentials) ResponseError: code=403, message=Request had insufficient authentication scopes.&amp;quot;  色々探してみたのですが、このエラーは簡単にいうと パーミッションがない ということです。
+authentication scopes というのはサービスアカウントやユーザーによってGCPのAPIへのアクセス権がないということに等しい（と思います）
+今回は一旦VMを止めて、編集から上記の Cloud API access scopes を適切なものに変更して直りました。</description>
     </item>
     
   </channel>

@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en-us">
+<html lang="ja-jp">
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     
-    <title>My New Hugo Site </title>
+    <title>TO-ON Developer Blog </title>
     <meta name="HandheldFriendly" content="True">
     <meta name="MobileOptimized" content="320">
 
@@ -21,8 +21,8 @@
     
 
     
-      <link href="https://lesson-time.github.io/blog/posts/index.xml" rel="alternate" type="application/rss+xml" title="My New Hugo Site" />
-      <link href="https://lesson-time.github.io/blog/posts/index.xml" rel="feed" type="application/rss+xml" title="My New Hugo Site" />
+      <link href="https://lesson-time.github.io/blog/posts/index.xml" rel="alternate" type="application/rss+xml" title="TO-ON Developer Blog" />
+      <link href="https://lesson-time.github.io/blog/posts/index.xml" rel="feed" type="application/rss+xml" title="TO-ON Developer Blog" />
     
 
     <meta property="og:title" content="Posts" />
@@ -32,7 +32,7 @@
 
 
 
-<meta property="og:updated_time" content="2018-02-07T15:50:11&#43;09:00"/>
+<meta property="og:updated_time" content="2018-02-07T18:57:41&#43;09:00"/>
 
 
 
@@ -63,7 +63,7 @@
       <nav class="pv3 ph3 ph4-ns" role="navigation">
   <div class="flex-l justify-between items-center center">
     <a href="https://lesson-time.github.io/blog/" class="f3 fw2 hover-white no-underline white-90 dib">
-      My New Hugo Site
+      TO-ON Developer Blog
     </a>
     <div class="flex-l items-center">
       
@@ -106,12 +106,49 @@
   <div class="bg-white mb3 pa4 gray overflow-hidden">
     <span class="f6 db">Posts</span>
     <h1 class="f3 near-black">
-      <a href="/blog/posts/my-first-post/" class="link black dim">
-        My First Post
+      <a href="/blog/posts/tutorial-for-k8s-tls-setting/" class="link black dim">
+        Kubernetes で ingress controller を使って https (TLS) 接続をするチュートリアル
       </a>
     </h1>
     <div class="nested-links f5 lh-copy nested-copy-line-height">
-      hello world
+      弊社ではKubernetesでDocker Containerを管理しています。
+レッスンタイムもそうですが、常時HTTPS接続をするために内部にnginx proxy の役割をするServiceを使っていました。
+ingress を使うと何がメリットかというと
+- 一つのingressで複数Serviceにまたがった設定ができる。
+- Serviceとして管理しないので分けて考えれる
+- Google 推奨の構成
+といったところですね。
+このチュートリアルでは
+1, ingressを使ってアプリケーションを公開する
+2, TLSの設定をして、https接続する。
+の二つを行いたいと思います。
+1, ingressを使ってアプリケーションを公開する 1.1, サービスを立ち上げる まずはingressを使わないでサービスを立ち上げれるかチェックします。
+こちらの公式ページがとてもわかりやすいのですが、Deployment から exposeして外部に公開してもいいし、Serviceを記述して公開してもいいです。
+例えばこういうDeploymentがあるとします。
+sandboxというnamespaceに一つアプリケーションを8080で公開する記述がされています。
+Rails だと3000ですね。
+apiVersion: apps/v1beta1 kind: Deployment metadata: name: test-app namespace: sandbox spec: replicas: 1 revisionHistoryLimit: 3 template: metadata: namespace: sandbox labels: run: test-app version: latest spec: containers: - name: test-app image: asia.gcr.io/project-id/image_name:latest ports: - containerPort: 8080  Terminal で
+    </div>
+  </div>
+</div>
+
+        </div>
+      
+        <div class="relative w-100  mb4 bg-white">
+          <div class="relative w-100 mb4 bg-white nested-copy-line-height">
+  <div class="bg-white mb3 pa4 gray overflow-hidden">
+    <span class="f6 db">Posts</span>
+    <h1 class="f3 near-black">
+      <a href="/blog/posts/insufficient-authentication-scopes/" class="link black dim">
+        GCPで 「Request had insufficient authentication scopes.」と怒られた時の対処法
+      </a>
+    </h1>
+    <div class="nested-links f5 lh-copy nested-copy-line-height">
+      GCEでオープンソースの Drone.io を動かしていて、そこから GKE にアクセスしています。
+今回新しく cluster を作成して、そこにdroneのGCEからアクセスしようと思ったのですが、以下のように怒られました。
+$ gcloud container clusters get-credentials test-cluster (gcloud.container.clusters.get-credentials) ResponseError: code=403, message=Request had insufficient authentication scopes.&quot;  色々探してみたのですが、このエラーは簡単にいうと パーミッションがない ということです。
+authentication scopes というのはサービスアカウントやユーザーによってGCPのAPIへのアクセス権がないということに等しい（と思います）
+今回は一旦VMを止めて、編集から上記の Cloud API access scopes を適切なものに変更して直りました。
     </div>
   </div>
 </div>
@@ -127,7 +164,7 @@
     <footer class="bg-near-black bottom-0 w-100 pa3" role="contentinfo">
   <div class="flex justify-between">
   <a class="f4 fw4 hover-white no-underline white-70 dn dib-ns pv2 ph3" href="https://lesson-time.github.io/blog/" >
-    &copy; 2018 My New Hugo Site
+    &copy; 2018 TO-ON Developer Blog
   </a>
   
 

@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="ja-jp">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    
+    <title>TO-ON Developer Blog  | Kubernetes で ingress controller を使って https (TLS) 接続をするチュートリアル</title>
+    <meta name="HandheldFriendly" content="True">
+    <meta name="MobileOptimized" content="320">
+
+    <meta name="viewport" content="width=device-width,minimum-scale=1">
+    <meta name="generator" content="Hugo 0.36" />
+    
+    
+      <META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+    
+
+    <link href='https://lesson-time.github.io/blog/dist/main.css' rel='stylesheet' type="text/css" />
+    
+      
+    
+
+    
+
+    <meta property="og:title" content="Kubernetes で ingress controller を使って https (TLS) 接続をするチュートリアル" />
+<meta property="og:description" content="弊社ではKubernetesでDocker Containerを管理しています。
+レッスンタイムもそうですが、常時HTTPS接続をするために内部にnginx proxy の役割をするServiceを使っていました。
+ingress を使うと何がメリットかというと
+- 一つのingressで複数Serviceにまたがった設定ができる。
+- Serviceとして管理しないので分けて考えれる
+- Google 推奨の構成
+といったところですね。
+このチュートリアルでは
+1, ingressを使ってアプリケーションを公開する
+2, TLSの設定をして、https接続する。
+の二つを行いたいと思います。
+1, ingressを使ってアプリケーションを公開する 1.1, サービスを立ち上げる まずはingressを使わないでサービスを立ち上げれるかチェックします。
+こちらの公式ページがとてもわかりやすいのですが、Deployment から exposeして外部に公開してもいいし、Serviceを記述して公開してもいいです。
+例えばこういうDeploymentがあるとします。
+sandboxというnamespaceに一つアプリケーションを8080で公開する記述がされています。
+Rails だと3000ですね。
+apiVersion: apps/v1beta1 kind: Deployment metadata: name: test-app namespace: sandbox spec: replicas: 1 revisionHistoryLimit: 3 template: metadata: namespace: sandbox labels: run: test-app version: latest spec: containers: - name: test-app image: asia.gcr.io/project-id/image_name:latest ports: - containerPort: 8080  Terminal で" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://lesson-time.github.io/blog/posts/tutorial-for-k8s-tls-setting/" />
+
+
+
+<meta property="article:published_time" content="2018-02-07T18:57:41&#43;09:00"/>
+
+<meta property="article:modified_time" content="2018-02-07T18:57:41&#43;09:00"/>
+
+
+
+
+
+
+
+
+
+
+
+<meta itemprop="name" content="Kubernetes で ingress controller を使って https (TLS) 接続をするチュートリアル">
+<meta itemprop="description" content="弊社ではKubernetesでDocker Containerを管理しています。
+レッスンタイムもそうですが、常時HTTPS接続をするために内部にnginx proxy の役割をするServiceを使っていました。
+ingress を使うと何がメリットかというと
+- 一つのingressで複数Serviceにまたがった設定ができる。
+- Serviceとして管理しないので分けて考えれる
+- Google 推奨の構成
+といったところですね。
+このチュートリアルでは
+1, ingressを使ってアプリケーションを公開する
+2, TLSの設定をして、https接続する。
+の二つを行いたいと思います。
+1, ingressを使ってアプリケーションを公開する 1.1, サービスを立ち上げる まずはingressを使わないでサービスを立ち上げれるかチェックします。
+こちらの公式ページがとてもわかりやすいのですが、Deployment から exposeして外部に公開してもいいし、Serviceを記述して公開してもいいです。
+例えばこういうDeploymentがあるとします。
+sandboxというnamespaceに一つアプリケーションを8080で公開する記述がされています。
+Rails だと3000ですね。
+apiVersion: apps/v1beta1 kind: Deployment metadata: name: test-app namespace: sandbox spec: replicas: 1 revisionHistoryLimit: 3 template: metadata: namespace: sandbox labels: run: test-app version: latest spec: containers: - name: test-app image: asia.gcr.io/project-id/image_name:latest ports: - containerPort: 8080  Terminal で">
+
+
+<meta itemprop="datePublished" content="2018-02-07T18:57:41&#43;09:00" />
+<meta itemprop="dateModified" content="2018-02-07T18:57:41&#43;09:00" />
+<meta itemprop="wordCount" content="424">
+
+
+
+<meta itemprop="keywords" content="" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Kubernetes で ingress controller を使って https (TLS) 接続をするチュートリアル"/>
+<meta name="twitter:description" content="弊社ではKubernetesでDocker Containerを管理しています。
+レッスンタイムもそうですが、常時HTTPS接続をするために内部にnginx proxy の役割をするServiceを使っていました。
+ingress を使うと何がメリットかというと
+- 一つのingressで複数Serviceにまたがった設定ができる。
+- Serviceとして管理しないので分けて考えれる
+- Google 推奨の構成
+といったところですね。
+このチュートリアルでは
+1, ingressを使ってアプリケーションを公開する
+2, TLSの設定をして、https接続する。
+の二つを行いたいと思います。
+1, ingressを使ってアプリケーションを公開する 1.1, サービスを立ち上げる まずはingressを使わないでサービスを立ち上げれるかチェックします。
+こちらの公式ページがとてもわかりやすいのですが、Deployment から exposeして外部に公開してもいいし、Serviceを記述して公開してもいいです。
+例えばこういうDeploymentがあるとします。
+sandboxというnamespaceに一つアプリケーションを8080で公開する記述がされています。
+Rails だと3000ですね。
+apiVersion: apps/v1beta1 kind: Deployment metadata: name: test-app namespace: sandbox spec: replicas: 1 revisionHistoryLimit: 3 template: metadata: namespace: sandbox labels: run: test-app version: latest spec: containers: - name: test-app image: asia.gcr.io/project-id/image_name:latest ports: - containerPort: 8080  Terminal で"/>
+
+  </head>
+
+  <body class="ma0 avenir bg-near-white">
+
+    
+
+  <header>
+    <div class="bg-black">
+      <nav class="pv3 ph3 ph4-ns" role="navigation">
+  <div class="flex-l justify-between items-center center">
+    <a href="https://lesson-time.github.io/blog/" class="f3 fw2 hover-white no-underline white-90 dib">
+      TO-ON Developer Blog
+    </a>
+    <div class="flex-l items-center">
+      
+      
+
+
+
+
+
+
+
+
+    </div>
+  </div>
+</nav>
+
+    </div>
+  </header>
+
+
+    <main class="pb7" role="main">
+      
+  <div class="flex-l mt2 mw8 center">
+    <article class="center cf pv5 ph3 ph4-ns mw7">
+      <header>
+        <p class="f6 b helvetica tracked">
+          POSTS
+        </p>
+        <h1 class="f1">
+          Kubernetes で ingress controller を使って https (TLS) 接続をするチュートリアル
+        </h1>
+      </header>
+      <div class="nested-copy-line-height lh-copy f4 nested-links nested-img mid-gray">
+        
+
+<p>弊社ではKubernetesでDocker Containerを管理しています。<br />
+<a href="https://lesson-time.com/">レッスンタイム</a>もそうですが、常時HTTPS接続をするために内部にnginx
+proxy の役割をするServiceを使っていました。</p>
+
+<p>ingress を使うと何がメリットかというと<br />
+ - 一つのingressで複数Serviceにまたがった設定ができる。<br />
+ - Serviceとして管理しないので分けて考えれる<br />
+ - Google 推奨の構成<br />
+といったところですね。</p>
+
+<p>このチュートリアルでは</p>
+
+<p>1, ingressを使ってアプリケーションを公開する<br />
+2, TLSの設定をして、https接続する。<br />
+の二つを行いたいと思います。</p>
+
+<h3 id="1-ingressを使ってアプリケーションを公開する">1, ingressを使ってアプリケーションを公開する</h3>
+
+<h5 id="1-1-サービスを立ち上げる">1.1, サービスを立ち上げる</h5>
+
+<p>まずはingressを使わないでサービスを立ち上げれるかチェックします。<br />
+<a href="https://kubernetes.io/docs/concepts/services-networking/connect-applications-service/">こちらの公式ページ</a>がとてもわかりやすいのですが、Deployment から exposeして外部に公開してもいいし、Serviceを記述して公開してもいいです。</p>
+
+<p>例えばこういうDeploymentがあるとします。<br />
+sandboxというnamespaceに一つアプリケーションを8080で公開する記述がされています。<br />
+Rails だと3000ですね。</p>
+
+<pre><code>apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: test-app
+  namespace: sandbox
+spec:
+  replicas: 1
+  revisionHistoryLimit: 3
+  template:
+    metadata:
+      namespace: sandbox
+      labels:
+        run: test-app
+        version: latest
+    spec:
+      containers:
+      - name: test-app
+        image: asia.gcr.io/project-id/image_name:latest
+        ports:
+        - containerPort: 8080
+</code></pre>
+
+<p>Terminal で</p>
+
+<pre><code>$ kubectl apply -f /path/to/deployment.yaml -n sandbox
+</code></pre>
+
+<p>とすると</p>
+
+<pre><code>$ kubectl get deploy,po,svc -n sandbox -o wide
+xtra241-imac:~ yoshi$ kubectl get deploy,po,svc -n sandbox -o wide
+NAME                 DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE       CONTAINER(S)   IMAGE(S)                                    SELECTOR
+deploy/test-app      1         1         1            1           1h        test-app       asia.gcr.io/project-id/image_name:latest    run=test-app,version=latest
+
+NAME                              READY     STATUS    RESTARTS   AGE       IP           NODE
+po/test-app-1139287214-gwb5l      1/1       Running   0          1h        10.84.5.78   gke-cluster-pool-f74157a4-jbct
+
+</code></pre>
+
+<p>という感じでDeploymentとpodが生成されます。<br />
+以下のコマンドでexpose して、serviceを生成します。</p>
+
+<pre><code>$ kubectl expose deploy/test-app -n sandbox --type=NodePort
+</code></pre>
+
+<p>External ip が <code>&lt;nodes&gt;</code> になっていたら完了です。</p>
+
+<pre><code>$ kubectl get svc -n sandbox
+NAME                  CLUSTER-IP     EXTERNAL-IP   PORT(S)          AGE       SELECTOR
+svc/test-app      10.87.241.72   &lt;nodes&gt;       8080:30932/TCP   1h        run=test-app
+</code></pre>
+
+<p>これは以下のServiceと同意です。</p>
+
+<pre><code>apiVersion: v1
+kind: Service
+metadata:
+  name: test-app
+  namespace: sandbox
+  labels:
+    run: test-app
+spec:
+  type: NodePort
+  selector:
+    run: test-app
+  ports:
+  - port: 8080
+    targetPort: 8080
+    protocol: TCP
+</code></pre>
+
+<p>今の時点で、Deployment, Pods, Serviceが生成されました。<br />
+NodePortで公開しているので、NodeにServiceが割り当てられ、IngressがService経由でPodsにアクセスすることができる状態になっています。</p>
+
+<h5 id="1-2-ingressの設定">1.2, Ingressの設定</h5>
+
+<p>Ingressは公式ドキュメントにしたがって記述するとすぐに設定できます。</p>
+
+<pre><code>apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: test-ingress
+  namespace: sandbox
+spec:
+  backend:
+    serviceName: test-app
+    servicePort: 8080
+</code></pre>
+
+<p>これをk8s上にあげます。</p>
+
+<pre><code>$ kubectl apply -f /path/to/ingress.yaml -n sandbox
+</code></pre>
+
+<pre><code>$ kubectl get ing -n sandbox
+NAME               HOSTS     ADDRESS         PORTS     AGE
+ing/test-ingress   *         35.227.212.97   80, 443   3h
+</code></pre>
+
+<p>ingress が正しく作成されているのが確認されました。<br />
+Addressは設定されるまで少し時間がかかります。</p>
+
+<pre><code>$ kubectl describe int/test-ingress -n sandbox
+Name:			test-ingress
+Namespace:		sandbox
+Address:		35.xxx.xxx.xx
+Default backend:	test-app:8080 (10.84.5.78:8080)
+TLS:
+  test-app.com-ssl terminates
+Rules:
+  Host	Path	Backends
+  ----	----	--------
+  *	* 	test-app:8080 (10.84.5.78:8080)
+Annotations:
+  target-proxy:			k8s-tp-sandbox-lt-ingress--d27c22d5c9cb1c59
+  forwarding-rule:		k8s-fw-sandbox-lt-ingress--d27c22d5c9cb1c59
+  https-forwarding-rule:	k8s-fws-sandbox-lt-ingress--d27c22d5c9cb1c59
+  https-target-proxy:		k8s-tps-sandbox-lt-ingress--d27c22d5c9cb1c59
+  ssl-cert:			k8s-ssl-sandbox-lt-ingress--d27c22d5c9cb1c59
+  static-ip:			k8s-fw-sandbox-lt-ingress--d27c22d5c9cb1c59
+  url-map:			k8s-um-sandbox-lt-ingress--d27c22d5c9cb1c59
+  backends:			{&quot;k8s-be-30932--d27c22d5c9cb1c59&quot;:&quot;HEALTHY&quot;}
+Events:
+  FirstSeen	LastSeen	Count	From			SubObjectPath	Type		Reason	Message
+  ---------	--------	-----	----			-------------	--------	------	-------
+  3h		7m		27	loadbalancer-controller			Normal		Service	default backend set to test-app:30932
+
+</code></pre>
+
+<p>ここで、roles &gt; backend が test-app:8080 になっているのを確認します。<br />
+ブラウザで <code>35.xxx.xxx.xx</code> にアクセスすると正しく表示されていると思います。</p>
+
+<h4 id="2-tlsの設定をして-https接続する">2, TLSの設定をして、https接続する。</h4>
+
+<p>これまで、 ingress &gt; service への接続ができました。<br />
+図示すると、</p>
+
+<pre><code># 1.1
+    internet
+        |
+  ------------
+  [ Services ]
+</code></pre>
+
+<p>から</p>
+
+<pre><code># 1.2
+    internet
+        |
+   [ Ingress ]
+   --|-----|--
+   [ Services ]
+</code></pre>
+
+<p>の状態に変更したところまでできています。</p>
+
+<p>ここでは<br />
+1, Secretを作成する
+2, ingress を TLS仕様にする<br />
+という手順でhttpsにしていきます。</p>
+
+<h5 id="2-1-secretを作成する">2.1, Secretを作成する</h5>
+
+<p>Secret は<a href="https://kubernetes.io/docs/concepts/services-networking/ingress/#tls">ドキュメント</a>にしたがっていきます。</p>
+
+<pre><code>apiVersion: v1
+data:
+  tls.crt: LS0tLS1CRUdJ..（省略）..S0tLQo=
+  tls.key: LS0tLS1CRUdJ..（省略）..S0tLS0K
+kind: Secret
+metadata:
+  name: test-app.com-ssl
+  namespace: sandbox
+type: Opaque
+</code></pre>
+
+<p>もちろん</p>
+
+<pre><code>$ kubectl apply -f /path/to/secret.yaml -n sandbox
+</code></pre>
+
+<h5 id="2-2-ingress-を-tls仕様にする">2.2, ingress を TLS仕様にする</h5>
+
+<p>作成した ingress を編集します。</p>
+
+<pre><code>apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: test-ingress
+  namespace: sandbox
+spec:
+  tls:
+  - secretName: test-app.com-ssl
+  backend:
+    serviceName: test-app
+    servicePort: 8080
+</code></pre>
+
+<p>変更のコマンドもこちらで一発。</p>
+
+<pre><code>$ kubectl apply -f /path/to/ingress.yaml -n sandbox
+</code></pre>
+
+<p>すると <code>https://test-app.com</code> でアクセスできるようになります。<br />
+ただ、<code>https://test-app.com</code>と<code>http://test-app.com</code>もアクセスできるので、リダイレクトの設定をしなければいけないです。
+今回はそこまでやっていないので、割愛します。</p>
+
+      </div>
+    </article>
+    <aside class="ph3 mt2 mt6-ns">
+      
+
+
+
+
+
+
+
+  <div class="bg-light-gray pa3">
+    <ul>
+      <li class="list b mb3">
+        1 More Posts
+      </li>
+      
+        <li class="list f5 w-100 hover-bg-white nl1">
+          
+          <a href="/blog/posts/tutorial-for-k8s-tls-setting/" class="link ph2 pv2 db black o-50">
+            Kubernetes で ingress controller を使って https (TLS) 接続をするチュートリアル
+          </a>
+        </li>
+      
+        <li class="list f5 w-100 hover-bg-white nl1">
+          
+          <a href="/blog/posts/insufficient-authentication-scopes/" class="link ph2 pv2 db black">
+            GCPで 「Request had insufficient authentication scopes.」と怒られた時の対処法
+          </a>
+        </li>
+      
+    </ul>
+  </div>
+
+
+    </aside>
+  </div>
+
+    </main>
+    <footer class="bg-near-black bottom-0 w-100 pa3" role="contentinfo">
+  <div class="flex justify-between">
+  <a class="f4 fw4 hover-white no-underline white-70 dn dib-ns pv2 ph3" href="https://lesson-time.github.io/blog/" >
+    &copy; 2018 TO-ON Developer Blog
+  </a>
+  
+
+
+
+
+
+
+
+
+  </div>
+</footer>
+
+    <script src="https://lesson-time.github.io/blog/dist/app.bundle.js" async></script>
+
+  </body>
+</html>
