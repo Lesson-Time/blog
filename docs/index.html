@@ -32,7 +32,7 @@
 
 
 
-<meta property="og:updated_time" content="2018-02-07T18:57:41&#43;09:00"/>
+<meta property="og:updated_time" content="2018-02-15T15:16:31&#43;09:00"/>
 
 
 
@@ -117,6 +117,42 @@
 
       <section class="w-100 mw8">
         
+        
+          <div class="relative w-100 mb4">
+            
+<article class="bb b--black-10">
+  <div class="db pv4 ph3 ph0-l no-underline dark-gray">
+    <div class="flex flex-column flex-row-ns">
+      
+      <div class="blah w-100">
+        <h1 class="f3 fw1 athelas mt0 lh-title">
+          <a href="/blog/posts/node-pool-update/" class="color-inherit dim link">
+            kubernetes の node のバージョンアップをダウンタイムなしで実行する
+            </a>
+        </h1>
+        <div class="f6 f5-l lh-copy nested-copy-line-height nested-links">
+          node pool の概要はこちらです。
+https://cloud.google.com/container-engine/docs/node-pools?hl=ja
+今回は1.6.4から1.6.6にバージョンアップをします。
+さて、kubernetes の node pool のバージョンアップをやるには
+1, 新しい node pool を作成する。
+2, 古い node に対して unschedule を設定する。
+3, pods を再構築して新しい node に乗るかを確認する。
+4, すべての pods を乗せ変える。
+1, 新しい node pool を作成する。 コマンドはこちらです。
+$ gcloud container node-pools create NODE_NAME --cluster=CLUSTER_NAME --machine-type=n1-standard-1 --disk-size=100 --num-nodes=2 --zone=asia-east1-a  zone に指定する asia-east1-a は cluster のzoneです。
+machine type とかは適宜変えましょう。
+node pool の一覧はこのようにして確かめれます。
+$ gcloud container node-pools list --cluster=CLUSTER_NAME NAME MACHINE_TYPE DISK_SIZE_GB NODE_VERSION pool1 n1-standard-1 100 1.
+        </div>
+          <a href="/blog/posts/node-pool-update/" class="ba b--moon-gray bg-light-gray br2 color-inherit dib f7 hover-bg-moon-gray link mt2 ph2 pv1">もっと読む</a>
+        
+      </div>
+    </div>
+  </div>
+</article>
+
+          </div>
         
           <div class="relative w-100 mb4">
             

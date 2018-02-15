@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="ja-jp">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    
+    <title>TO-ON Developer Blog  | kubernetes の node のバージョンアップをダウンタイムなしで実行する</title>
+    <meta name="HandheldFriendly" content="True">
+    <meta name="MobileOptimized" content="320">
+
+    <meta name="viewport" content="width=device-width,minimum-scale=1">
+    <meta name="generator" content="Hugo 0.36" />
+    
+    
+      <META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+    
+
+    <link href='https://lesson-time.github.io/blog/dist/main.css' rel='stylesheet' type="text/css" />
+    
+      
+    
+
+    
+
+    <meta property="og:title" content="kubernetes の node のバージョンアップをダウンタイムなしで実行する" />
+<meta property="og:description" content="node pool の概要はこちらです。
+https://cloud.google.com/container-engine/docs/node-pools?hl=ja
+今回は1.6.4から1.6.6にバージョンアップをします。
+さて、kubernetes の node pool のバージョンアップをやるには
+1, 新しい node pool を作成する。
+2, 古い node に対して unschedule を設定する。
+3, pods を再構築して新しい node に乗るかを確認する。
+4, すべての pods を乗せ変える。
+1, 新しい node pool を作成する。 コマンドはこちらです。
+$ gcloud container node-pools create NODE_NAME --cluster=CLUSTER_NAME --machine-type=n1-standard-1 --disk-size=100 --num-nodes=2 --zone=asia-east1-a  zone に指定する asia-east1-a は cluster のzoneです。
+machine type とかは適宜変えましょう。
+node pool の一覧はこのようにして確かめれます。
+$ gcloud container node-pools list --cluster=CLUSTER_NAME NAME MACHINE_TYPE DISK_SIZE_GB NODE_VERSION pool1 n1-standard-1 100 1." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://lesson-time.github.io/blog/posts/node-pool-update/" />
+
+
+
+<meta property="article:published_time" content="2018-02-15T15:16:31&#43;09:00"/>
+
+<meta property="article:modified_time" content="2018-02-15T15:16:31&#43;09:00"/>
+
+
+
+
+
+
+
+
+
+
+
+<meta itemprop="name" content="kubernetes の node のバージョンアップをダウンタイムなしで実行する">
+<meta itemprop="description" content="node pool の概要はこちらです。
+https://cloud.google.com/container-engine/docs/node-pools?hl=ja
+今回は1.6.4から1.6.6にバージョンアップをします。
+さて、kubernetes の node pool のバージョンアップをやるには
+1, 新しい node pool を作成する。
+2, 古い node に対して unschedule を設定する。
+3, pods を再構築して新しい node に乗るかを確認する。
+4, すべての pods を乗せ変える。
+1, 新しい node pool を作成する。 コマンドはこちらです。
+$ gcloud container node-pools create NODE_NAME --cluster=CLUSTER_NAME --machine-type=n1-standard-1 --disk-size=100 --num-nodes=2 --zone=asia-east1-a  zone に指定する asia-east1-a は cluster のzoneです。
+machine type とかは適宜変えましょう。
+node pool の一覧はこのようにして確かめれます。
+$ gcloud container node-pools list --cluster=CLUSTER_NAME NAME MACHINE_TYPE DISK_SIZE_GB NODE_VERSION pool1 n1-standard-1 100 1.">
+
+
+<meta itemprop="datePublished" content="2018-02-15T15:16:31&#43;09:00" />
+<meta itemprop="dateModified" content="2018-02-15T15:16:31&#43;09:00" />
+<meta itemprop="wordCount" content="278">
+
+
+
+<meta itemprop="keywords" content="" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="kubernetes の node のバージョンアップをダウンタイムなしで実行する"/>
+<meta name="twitter:description" content="node pool の概要はこちらです。
+https://cloud.google.com/container-engine/docs/node-pools?hl=ja
+今回は1.6.4から1.6.6にバージョンアップをします。
+さて、kubernetes の node pool のバージョンアップをやるには
+1, 新しい node pool を作成する。
+2, 古い node に対して unschedule を設定する。
+3, pods を再構築して新しい node に乗るかを確認する。
+4, すべての pods を乗せ変える。
+1, 新しい node pool を作成する。 コマンドはこちらです。
+$ gcloud container node-pools create NODE_NAME --cluster=CLUSTER_NAME --machine-type=n1-standard-1 --disk-size=100 --num-nodes=2 --zone=asia-east1-a  zone に指定する asia-east1-a は cluster のzoneです。
+machine type とかは適宜変えましょう。
+node pool の一覧はこのようにして確かめれます。
+$ gcloud container node-pools list --cluster=CLUSTER_NAME NAME MACHINE_TYPE DISK_SIZE_GB NODE_VERSION pool1 n1-standard-1 100 1."/>
+
+  </head>
+
+  <body class="ma0 avenir bg-near-white">
+
+    
+
+  <header>
+    <div class="bg-black">
+      <nav class="pv3 ph3 ph4-ns" role="navigation">
+  <div class="flex-l justify-between items-center center">
+    <a href="https://lesson-time.github.io/blog/" class="f3 fw2 hover-white no-underline white-90 dib">
+      TO-ON Developer Blog
+    </a>
+    <div class="flex-l items-center">
+      
+      
+
+
+
+
+
+
+
+
+    </div>
+  </div>
+</nav>
+
+    </div>
+  </header>
+
+
+    <main class="pb7" role="main">
+      
+  <div class="flex-l mt2 mw8 center">
+    <article class="center cf pv5 ph3 ph4-ns mw7">
+      <header>
+        <p class="f6 b helvetica tracked">
+          POSTS
+        </p>
+        <h1 class="f1">
+          kubernetes の node のバージョンアップをダウンタイムなしで実行する
+        </h1>
+      </header>
+      <div class="nested-copy-line-height lh-copy f4 nested-links nested-img mid-gray">
+        
+
+<p>node pool の概要はこちらです。<br />
+<a href="https://cloud.google.com/container-engine/docs/node-pools?hl=ja">https://cloud.google.com/container-engine/docs/node-pools?hl=ja</a></p>
+
+<p>今回は<code>1.6.4</code>から<code>1.6.6</code>にバージョンアップをします。</p>
+
+<p>さて、kubernetes の node pool のバージョンアップをやるには<br />
+1, 新しい node pool を作成する。<br />
+2, 古い node に対して unschedule を設定する。<br />
+3, pods を再構築して新しい node に乗るかを確認する。<br />
+4, すべての pods を乗せ変える。</p>
+
+<h4 id="1-新しい-node-pool-を作成する">1, 新しい node pool を作成する。</h4>
+
+<p>コマンドはこちらです。</p>
+
+<pre><code>$ gcloud container node-pools create NODE_NAME --cluster=CLUSTER_NAME --machine-type=n1-standard-1 --disk-size=100 --num-nodes=2 --zone=asia-east1-a
+</code></pre>
+
+<p>zone に指定する asia-east1-a は cluster のzoneです。<br />
+machine type とかは適宜変えましょう。<br />
+node pool の一覧はこのようにして確かめれます。</p>
+
+<pre><code>$ gcloud container node-pools list --cluster=CLUSTER_NAME
+NAME    MACHINE_TYPE   DISK_SIZE_GB  NODE_VERSION
+pool1   n1-standard-1  100           1.6.4
+pool2   n1-standard-1  100           1.6.6
+</code></pre>
+
+<h4 id="2-古い-node-に対して-unschedule-を設定する">2, 古い node に対して unschedule を設定する。</h4>
+
+<p>node の情報を取得して、それぞれに対して unschedule を設定します。</p>
+
+<pre><code>$ kubectl get no
+NAME                                   STATUS    AGE       VERSION
+gke-hoge-cluster-pool1-00625cca-1j5h   Ready     2d        v1.6.4
+gke-hoge-cluster-pool1-00625cca-d2fl   Ready     2d        v1.6.4
+gke-hoge-cluster-pool1-00625cca-wuim   Ready     2d        v1.6.4
+gke-hoge-cluster-pool2-f74157a4-glr2   Ready     3m        v1.6.6
+gke-hoge-cluster-pool3-f74157a4-jbct   Ready     3m        v1.6.6
+</code></pre>
+
+<p>そしたら<code>gke-hoge-cluster-pool1-00625cca-wuim</code>に対して unschedule を設定しましょう。</p>
+
+<pre><code>$ kubectl cordon gke-hoge-cluster-pool1-00625cca-wuim
+node &quot;gke-hoge-cluster-pool1-00625cca-wuim&quot; cordoned
+</code></pre>
+
+<p>古いすべての node に対して実行すると以下のようになります。
+status が SchedulingDisabled になっています。</p>
+
+<pre><code>kubectl get node
+NAME                                   STATUS                     AGE       VERSION
+gke-hoge-cluster-pool1-00625cca-1j5h   Ready,SchedulingDisabled   2d        v1.6.4
+gke-hoge-cluster-pool1-00625cca-d2fl   Ready,SchedulingDisabled   2d        v1.6.4
+gke-hoge-cluster-pool1-00625cca-wuim   Ready,SchedulingDisabled   2d        v1.6.4
+gke-hoge-cluster-pool2-f74157a4-glr2   Ready                      5m        v1.6.6
+gke-hoge-cluster-pool2-f74157a4-jbct   Ready                      5m        v1.6.6
+</code></pre>
+
+<p>こうなることで、これから作られる pods はすべて <code>gke-hoge-cluster-pool2-f74157a4-glr2</code> か <code>gke-hoge-cluster-pool2-f74157a4-jbct</code> 上に作られることになります。</p>
+
+<h4 id="3-pods-を再構築して新しい-node-に乗るかを確認する">3, pods を再構築して新しい node に乗るかを確認する。</h4>
+
+<p>さて、今までの pods がどこに乗っているのかを確認しましょう。</p>
+
+<pre><code>$ kubectl get po -o wide -n hogehoge
+NAME                     READY     STATUS    RESTARTS   AGE       IP           NODE
+bra1-2107184181-vwt7p     2/2       Running   0          2d        10.84.1.13   gke-hoge-cluster-pool1-00625cca-d2fl
+bra2-1613048047-5fw6x     1/1       Running   0          23m       10.84.1.35   gke-hoge-cluster-pool1-00625cca-wuim 
+</code></pre>
+
+<p>各nodeが古いもの（1.6.4）に乗っていることがわかります。
+node　を新しくするには</p>
+
+<pre><code>$ kubectl delete po bra1-2107184181-vwt7p -n hogehoge
+</code></pre>
+
+<p>とするか、</p>
+
+<pre><code>$ kubectl scale deploy bra1 --replicas 0 -n hogehoge
+# pods が消されたことを確認した後に
+$ kubectl scale deploy bra1 --replicas 1 -n hogehoge
+</code></pre>
+
+<p>とすると</p>
+
+<pre><code>NAME                     READY     STATUS    RESTARTS   AGE       IP           NODE
+bra1-2107184181-vwt7p     2/2       Running   0          2d        10.84.1.13   gke-hoge-cluster-pool2-f74157a4-glr2
+bra2-1613048047-5fw6x     1/1       Running   0          23m       10.84.1.35   gke-hoge-cluster-pool2-f74157a4-jbct 
+</code></pre>
+
+<p>変更されていることがわかります。<br />
+新しい　node にアプリケーションを移すと node 自体の ip アドレスが変わるので sql などの　whitelist に追加しましょう。</p>
+
+<h4 id="4-すべての-pods-を乗せ変える">4, すべての pods を乗せ変える。</h4>
+
+<p>あとは3の繰り返しです。 Yay !</p>
+
+<h4 id="参考">参考</h4>
+
+<p><a href="http://qiita.com/strsk/items/f548940a3fcac54e05ff">GKEのノードプールを利用したKubernetesのアップグレード</a></p>
+
+      </div>
+    </article>
+    <aside class="ph3 mt2 mt6-ns">
+      
+
+
+
+
+
+
+
+  <div class="bg-light-gray pa3">
+    <ul>
+      <li class="list b mb3">
+        2 More Posts
+      </li>
+      
+        <li class="list f5 w-100 hover-bg-white nl1">
+          
+          <a href="/blog/posts/node-pool-update/" class="link ph2 pv2 db black o-50">
+            kubernetes の node のバージョンアップをダウンタイムなしで実行する
+          </a>
+        </li>
+      
+        <li class="list f5 w-100 hover-bg-white nl1">
+          
+          <a href="/blog/posts/tutorial-for-k8s-tls-setting/" class="link ph2 pv2 db black">
+            Kubernetes で ingress controller を使って https (TLS) 接続をするチュートリアル
+          </a>
+        </li>
+      
+        <li class="list f5 w-100 hover-bg-white nl1">
+          
+          <a href="/blog/posts/insufficient-authentication-scopes/" class="link ph2 pv2 db black">
+            GCPで 「Request had insufficient authentication scopes.」と怒られた時の対処法
+          </a>
+        </li>
+      
+    </ul>
+  </div>
+
+
+    </aside>
+  </div>
+
+    </main>
+    <footer class="bg-near-black bottom-0 w-100 pa3" role="contentinfo">
+  <div class="flex justify-between">
+  <a class="f4 fw4 hover-white no-underline white-70 dn dib-ns pv2 ph3" href="https://lesson-time.github.io/blog/" >
+    &copy; 2018 TO-ON Developer Blog
+  </a>
+  
+
+
+
+
+
+
+
+
+  </div>
+</footer>
+
+    <script src="https://lesson-time.github.io/blog/dist/app.bundle.js" async></script>
+
+  </body>
+</html>

@@ -3,6 +3,11 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>https://lesson-time.github.io/blog/posts/node-pool-update/</loc>
+    <lastmod>2018-02-15T15:16:31+09:00</lastmod>
+  </url>
+  
+  <url>
     <loc>https://lesson-time.github.io/blog/posts/tutorial-for-k8s-tls-setting/</loc>
     <lastmod>2018-02-07T18:57:41+09:00</lastmod>
   </url>
@@ -19,13 +24,13 @@
   
   <url>
     <loc>https://lesson-time.github.io/blog/posts/</loc>
-    <lastmod>2018-02-07T18:57:41+09:00</lastmod>
+    <lastmod>2018-02-15T15:16:31+09:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>https://lesson-time.github.io/blog/</loc>
-    <lastmod>2018-02-07T18:57:41+09:00</lastmod>
+    <lastmod>2018-02-15T15:16:31+09:00</lastmod>
     <priority>0</priority>
   </url>
   
