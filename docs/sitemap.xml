@@ -5,37 +5,47 @@
   <url>
     <loc>https://lesson-time.github.io/blog/posts/node-pool-update/</loc>
     <lastmod>2018-02-15T15:16:31+09:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
   </url>
   
   <url>
     <loc>https://lesson-time.github.io/blog/posts/tutorial-for-k8s-tls-setting/</loc>
     <lastmod>2018-02-07T18:57:41+09:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
   </url>
   
   <url>
     <loc>https://lesson-time.github.io/blog/posts/insufficient-authentication-scopes/</loc>
     <lastmod>2018-02-07T18:49:38+09:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
   </url>
   
   <url>
     <loc>https://lesson-time.github.io/blog/categories/</loc>
+    <changefreq>monthly</changefreq>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>https://lesson-time.github.io/blog/posts/</loc>
     <lastmod>2018-02-15T15:16:31+09:00</lastmod>
+    <changefreq>monthly</changefreq>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>https://lesson-time.github.io/blog/</loc>
     <lastmod>2018-02-15T15:16:31+09:00</lastmod>
+    <changefreq>monthly</changefreq>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>https://lesson-time.github.io/blog/tags/</loc>
+    <changefreq>monthly</changefreq>
     <priority>0</priority>
   </url>
   

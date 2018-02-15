@@ -3,3 +3,31 @@ languageCode = "ja-jp"
 title = "TO-ON Developer Blog"
 theme = "gohugo-theme-ananke"
 publishDir = "docs"
+
+MetaDataFormat = "yaml"
+DefaultContentLanguage = "en"
+SectionPagesMenu = "main"
+Paginate = 3 # this is set low for demonstrating with dummy content. Set to a higher number
+googleAnalytics = "UA-6310270-10"
+enableRobotsTXT = true
+
+
+[sitemap]
+  changefreq = "monthly"
+  priority = 0.5
+  filename = "sitemap.xml"
+
+
+[params]
+  favicon = "https://d70bfq03xi3l1.cloudfront.net/resources/icon/LT_favicon_blue/favicon-96x96.png"
+  description = "Blog / Lesson Time project team."
+  facebook = "https://www.facebook.com/LessonTimeCom/"
+  twitter = "https://twitter.com/LessonTimeCom"
+  # instagram = ""
+  youtube = "https://www.youtube.com/channel/UC5BX5drkLgonZ4YKY6y8pGg"
+  github = "https://github.com/Lesson-Time"
+  # linkedin = ""
+  # choose a background color from any on this page: http://tachyons.io/docs/themes/skins/ and preface it with "bg-"
+  background_color_class = "bg-black"
+  featured_image = "/images/gohugo-default-sample-hero-image.jpg"
+  recent_posts_number = 2
