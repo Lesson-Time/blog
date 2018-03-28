@@ -6,10 +6,24 @@
     <description>Recent content on TO-ON Developer Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>ja-jp</language>
-    <lastBuildDate>Thu, 15 Feb 2018 15:16:31 +0900</lastBuildDate>
+    <lastBuildDate>Wed, 28 Mar 2018 09:08:18 +0900</lastBuildDate>
     
 	<atom:link href="https://lesson-time.github.io/blog/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Kubernetes の pods を更新する方法</title>
+      <link>https://lesson-time.github.io/blog/posts/how-to-update-k8s-pods/</link>
+      <pubDate>Wed, 28 Mar 2018 09:08:18 +0900</pubDate>
+      
+      <guid>https://lesson-time.github.io/blog/posts/how-to-update-k8s-pods/</guid>
+      <description>ローカルからDocker image を Build して、 GCRにpush, k8sのアプリケーションを変更する方法を記述します。
+Build docker build --rm -t asia.gcr.io/sample-project/example:v1 .  --rm はビルド成功後中間コンテナを削除するオプションです。-tはタグをイメージにつけることができます。
+この場合は v1を asia.gcr.io/sample-project/example に付与しています。
+Test (RUN) docker run --rm -it -P asia.gcr.io/sample-project/example:v1 .  インタラクティブなプロセスでは、コンテナのプロセスに対して tty を割り当てるために、 -i -t を一緒に使う必要があります。
+Upload gcloud docker -- push asia.gcr.io/sample-project/example:v1  gcloud をインストールしている必要があります。
+Deploy kubectl set image deployment/example example=asia.gcr.io/sample-project/example:v1 -n your-namespace kubectl rollout status deployment/example -n your-namespace  set image で deployment に新しいイメージを付与して、 rollout コマンドでpodの更新をします。</description>
+    </item>
     
     <item>
       <title>kubernetes の node のバージョンアップをダウンタイムなしで実行する</title>

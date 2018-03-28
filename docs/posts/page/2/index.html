@@ -34,7 +34,7 @@
 
 
 
-<meta property="og:updated_time" content="2018-03-28T09:08:18&#43;09:00"/>
+<meta property="og:updated_time" content="2018-02-07T18:49:38&#43;09:00"/>
 
 
 
@@ -140,79 +140,16 @@
   <div class="bg-white mb3 pa4 gray overflow-hidden">
     <span class="f6 db">Posts</span>
     <h1 class="f3 near-black">
-      <a href="/blog/posts/how-to-update-k8s-pods/" class="link black dim">
-        Kubernetes の pods を更新する方法
+      <a href="/blog/posts/insufficient-authentication-scopes/" class="link black dim">
+        GCPで 「Request had insufficient authentication scopes.」と怒られた時の対処法
       </a>
     </h1>
     <div class="nested-links f5 lh-copy nested-copy-line-height">
-      ローカルからDocker image を Build して、 GCRにpush, k8sのアプリケーションを変更する方法を記述します。
-Build docker build --rm -t asia.gcr.io/sample-project/example:v1 .  --rm はビルド成功後中間コンテナを削除するオプションです。-tはタグをイメージにつけることができます。
-この場合は v1を asia.gcr.io/sample-project/example に付与しています。
-Test (RUN) docker run --rm -it -P asia.gcr.io/sample-project/example:v1 .  インタラクティブなプロセスでは、コンテナのプロセスに対して tty を割り当てるために、 -i -t を一緒に使う必要があります。
-Upload gcloud docker -- push asia.gcr.io/sample-project/example:v1  gcloud をインストールしている必要があります。
-Deploy kubectl set image deployment/example example=asia.gcr.io/sample-project/example:v1 -n your-namespace kubectl rollout status deployment/example -n your-namespace  set image で deployment に新しいイメージを付与して、 rollout コマンドでpodの更新をします。
-    </div>
-  </div>
-</div>
-
-        </div>
-      
-        <div class="relative w-100  mb4 bg-white">
-          <div class="relative w-100 mb4 bg-white nested-copy-line-height">
-  <div class="bg-white mb3 pa4 gray overflow-hidden">
-    <span class="f6 db">Posts</span>
-    <h1 class="f3 near-black">
-      <a href="/blog/posts/node-pool-update/" class="link black dim">
-        kubernetes の node のバージョンアップをダウンタイムなしで実行する
-      </a>
-    </h1>
-    <div class="nested-links f5 lh-copy nested-copy-line-height">
-      node pool の概要はこちらです。
-https://cloud.google.com/container-engine/docs/node-pools?hl=ja
-今回は1.6.4から1.6.6にバージョンアップをします。
-さて、kubernetes の node pool のバージョンアップをやるには
-1, 新しい node pool を作成する。
-2, 古い node に対して unschedule を設定する。
-3, pods を再構築して新しい node に乗るかを確認する。
-4, すべての pods を乗せ変える。
-1, 新しい node pool を作成する。 コマンドはこちらです。
-$ gcloud container node-pools create NODE_NAME --cluster=CLUSTER_NAME --machine-type=n1-standard-1 --disk-size=100 --num-nodes=2 --zone=asia-east1-a  zone に指定する asia-east1-a は cluster のzoneです。
-machine type とかは適宜変えましょう。
-node pool の一覧はこのようにして確かめれます。
-$ gcloud container node-pools list --cluster=CLUSTER_NAME NAME MACHINE_TYPE DISK_SIZE_GB NODE_VERSION pool1 n1-standard-1 100 1.
-    </div>
-  </div>
-</div>
-
-        </div>
-      
-        <div class="relative w-100  mb4 bg-white">
-          <div class="relative w-100 mb4 bg-white nested-copy-line-height">
-  <div class="bg-white mb3 pa4 gray overflow-hidden">
-    <span class="f6 db">Posts</span>
-    <h1 class="f3 near-black">
-      <a href="/blog/posts/tutorial-for-k8s-tls-setting/" class="link black dim">
-        Kubernetes で ingress controller を使って https (TLS) 接続をするチュートリアル
-      </a>
-    </h1>
-    <div class="nested-links f5 lh-copy nested-copy-line-height">
-      弊社ではKubernetesでDocker Containerを管理しています。
-レッスンタイムもそうですが、常時HTTPS接続をするために内部にnginx proxy の役割をするServiceを使っていました。
-ingress を使うと何がメリットかというと
-- 一つのingressで複数Serviceにまたがった設定ができる。
-- Serviceとして管理しないので分けて考えれる
-- Google 推奨の構成
-といったところですね。
-このチュートリアルでは
-1, ingressを使ってアプリケーションを公開する
-2, TLSの設定をして、https接続する。
-の二つを行いたいと思います。
-1, ingressを使ってアプリケーションを公開する 1.1, サービスを立ち上げる まずはingressを使わないでサービスを立ち上げれるかチェックします。
-こちらの公式ページがとてもわかりやすいのですが、Deployment から exposeして外部に公開してもいいし、Serviceを記述して公開してもいいです。
-例えばこういうDeploymentがあるとします。
-sandboxというnamespaceに一つアプリケーションを8080で公開する記述がされています。
-Rails だと3000ですね。
-apiVersion: apps/v1beta1 kind: Deployment metadata: name: test-app namespace: sandbox spec: replicas: 1 revisionHistoryLimit: 3 template: metadata: namespace: sandbox labels: run: test-app version: latest spec: containers: - name: test-app image: asia.gcr.io/project-id/image_name:latest ports: - containerPort: 8080  Terminal で
+      GCEでオープンソースの Drone.io を動かしていて、そこから GKE にアクセスしています。
+今回新しく cluster を作成して、そこにdroneのGCEからアクセスしようと思ったのですが、以下のように怒られました。
+$ gcloud container clusters get-credentials test-cluster (gcloud.container.clusters.get-credentials) ResponseError: code=403, message=Request had insufficient authentication scopes.&quot;  色々探してみたのですが、このエラーは簡単にいうと パーミッションがない ということです。
+authentication scopes というのはサービスアカウントやユーザーによってGCPのAPIへのアクセス権がないということに等しい（と思います）
+今回は一旦VMを止めて、編集から上記の Cloud API access scopes を適切なものに変更して直りました。
     </div>
   </div>
 </div>
@@ -229,8 +166,8 @@ apiVersion: apps/v1beta1 kind: Deployment metadata: name: test-app namespace: sa
     </li>
     
     <li
-    class="disabled">
-    <a href="" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a>
+    >
+    <a href="/blog/posts/" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a>
     </li>
     
     
@@ -243,7 +180,7 @@ apiVersion: apps/v1beta1 kind: Deployment metadata: name: test-app namespace: sa
     
     
     <li
-    class="active"><a href="/blog/posts/">1</a></li>
+    ><a href="/blog/posts/">1</a></li>
     
     
     
@@ -255,12 +192,12 @@ apiVersion: apps/v1beta1 kind: Deployment metadata: name: test-app namespace: sa
     
     
     <li
-    ><a href="/blog/posts/page/2/">2</a></li>
+    class="active"><a href="/blog/posts/page/2/">2</a></li>
     
     
     <li
-    >
-    <a href="/blog/posts/page/2/" aria-label="Next"><span aria-hidden="true">&raquo;</span></a>
+    class="disabled">
+    <a href="" aria-label="Next"><span aria-hidden="true">&raquo;</span></a>
     </li>
     
     <li>

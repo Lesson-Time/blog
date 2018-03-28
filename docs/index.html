@@ -34,7 +34,7 @@
 
 
 
-<meta property="og:updated_time" content="2018-02-15T15:16:31&#43;09:00"/>
+<meta property="og:updated_time" content="2018-03-28T09:08:18&#43;09:00"/>
 
 
 
@@ -160,6 +160,35 @@
       
       <div class="blah w-100">
         <h1 class="f3 fw1 athelas mt0 lh-title">
+          <a href="/blog/posts/how-to-update-k8s-pods/" class="color-inherit dim link">
+            Kubernetes の pods を更新する方法
+            </a>
+        </h1>
+        <div class="f6 f5-l lh-copy nested-copy-line-height nested-links">
+          ローカルからDocker image を Build して、 GCRにpush, k8sのアプリケーションを変更する方法を記述します。
+Build docker build --rm -t asia.gcr.io/sample-project/example:v1 .  --rm はビルド成功後中間コンテナを削除するオプションです。-tはタグをイメージにつけることができます。
+この場合は v1を asia.gcr.io/sample-project/example に付与しています。
+Test (RUN) docker run --rm -it -P asia.gcr.io/sample-project/example:v1 .  インタラクティブなプロセスでは、コンテナのプロセスに対して tty を割り当てるために、 -i -t を一緒に使う必要があります。
+Upload gcloud docker -- push asia.gcr.io/sample-project/example:v1  gcloud をインストールしている必要があります。
+Deploy kubectl set image deployment/example example=asia.gcr.io/sample-project/example:v1 -n your-namespace kubectl rollout status deployment/example -n your-namespace  set image で deployment に新しいイメージを付与して、 rollout コマンドでpodの更新をします。
+        </div>
+          <a href="/blog/posts/how-to-update-k8s-pods/" class="ba b--moon-gray bg-light-gray br2 color-inherit dib f7 hover-bg-moon-gray link mt2 ph2 pv1">もっと読む</a>
+        
+      </div>
+    </div>
+  </div>
+</article>
+
+          </div>
+        
+          <div class="relative w-100 mb4">
+            
+<article class="bb b--black-10">
+  <div class="db pv4 ph3 ph0-l no-underline dark-gray">
+    <div class="flex flex-column flex-row-ns">
+      
+      <div class="blah w-100">
+        <h1 class="f3 fw1 athelas mt0 lh-title">
           <a href="/blog/posts/node-pool-update/" class="color-inherit dim link">
             kubernetes の node のバージョンアップをダウンタイムなしで実行する
             </a>
@@ -188,52 +217,18 @@ $ gcloud container node-pools list --cluster=CLUSTER_NAME NAME MACHINE_TYPE DISK
 
           </div>
         
-          <div class="relative w-100 mb4">
-            
-<article class="bb b--black-10">
-  <div class="db pv4 ph3 ph0-l no-underline dark-gray">
-    <div class="flex flex-column flex-row-ns">
-      
-      <div class="blah w-100">
-        <h1 class="f3 fw1 athelas mt0 lh-title">
-          <a href="/blog/posts/tutorial-for-k8s-tls-setting/" class="color-inherit dim link">
-            Kubernetes で ingress controller を使って https (TLS) 接続をするチュートリアル
-            </a>
-        </h1>
-        <div class="f6 f5-l lh-copy nested-copy-line-height nested-links">
-          弊社ではKubernetesでDocker Containerを管理しています。
-レッスンタイムもそうですが、常時HTTPS接続をするために内部にnginx proxy の役割をするServiceを使っていました。
-ingress を使うと何がメリットかというと
-- 一つのingressで複数Serviceにまたがった設定ができる。
-- Serviceとして管理しないので分けて考えれる
-- Google 推奨の構成
-といったところですね。
-このチュートリアルでは
-1, ingressを使ってアプリケーションを公開する
-2, TLSの設定をして、https接続する。
-の二つを行いたいと思います。
-1, ingressを使ってアプリケーションを公開する 1.1, サービスを立ち上げる まずはingressを使わないでサービスを立ち上げれるかチェックします。
-こちらの公式ページがとてもわかりやすいのですが、Deployment から exposeして外部に公開してもいいし、Serviceを記述して公開してもいいです。
-例えばこういうDeploymentがあるとします。
-sandboxというnamespaceに一つアプリケーションを8080で公開する記述がされています。
-Rails だと3000ですね。
-apiVersion: apps/v1beta1 kind: Deployment metadata: name: test-app namespace: sandbox spec: replicas: 1 revisionHistoryLimit: 3 template: metadata: namespace: sandbox labels: run: test-app version: latest spec: containers: - name: test-app image: asia.gcr.io/project-id/image_name:latest ports: - containerPort: 8080  Terminal で
-        </div>
-          <a href="/blog/posts/tutorial-for-k8s-tls-setting/" class="ba b--moon-gray bg-light-gray br2 color-inherit dib f7 hover-bg-moon-gray link mt2 ph2 pv1">もっと読む</a>
-        
-      </div>
-    </div>
-  </div>
-</article>
-
-          </div>
-        
       </section>
 
       
       <section class="w-100">
         <h1 class="f3">More</h1>
         
+        
+          <h2 class="f5 fw4 mb4 dib mr3">
+            <a href="/blog/posts/tutorial-for-k8s-tls-setting/" class="link black dim">
+              Kubernetes で ingress controller を使って https (TLS) 接続をするチュートリアル
+            </a>
+          </h2>
         
           <h2 class="f5 fw4 mb4 dib mr3">
             <a href="/blog/posts/insufficient-authentication-scopes/" class="link black dim">
