@@ -34,7 +34,7 @@
 
 
 
-<meta property="og:updated_time" content="2018-03-28T09:08:18&#43;09:00"/>
+<meta property="og:updated_time" content="2018-03-28T09:21:40&#43;09:00"/>
 
 
 
@@ -140,6 +140,25 @@
   <div class="bg-white mb3 pa4 gray overflow-hidden">
     <span class="f6 db">Posts</span>
     <h1 class="f3 near-black">
+      <a href="/blog/posts/remove-useless-docker-images-and-containers/" class="link black dim">
+        Dockerで開発している時に不要になった image や container を全て削除する
+      </a>
+    </h1>
+    <div class="nested-links f5 lh-copy nested-copy-line-height">
+       Docker を使っていると、docker 関係のファイルがたくさん生成され、PCのvolumeを圧迫していることがあります。
+そんな時は以下のコマンドを適宜活用すると数GB減らすことができるのでとても便利です。
+container の終了 $ docker kill [containerID]  不要な docker container の削除 $ docker rm $(docker ps -f status=exited -q)  不要な docker image の削除 $ docker rmi $(docker images -f dangling=true -q)  container に入る $ docker exec -it [containerID] /bin/bash  ログを見る $ docker logs -f [containerID]  
+    </div>
+  </div>
+</div>
+
+        </div>
+      
+        <div class="relative w-100  mb4 bg-white">
+          <div class="relative w-100 mb4 bg-white nested-copy-line-height">
+  <div class="bg-white mb3 pa4 gray overflow-hidden">
+    <span class="f6 db">Posts</span>
+    <h1 class="f3 near-black">
       <a href="/blog/posts/how-to-update-k8s-pods/" class="link black dim">
         Kubernetes の pods を更新する方法
       </a>
@@ -180,39 +199,6 @@ $ gcloud container node-pools create NODE_NAME --cluster=CLUSTER_NAME --machine-
 machine type とかは適宜変えましょう。
 node pool の一覧はこのようにして確かめれます。
 $ gcloud container node-pools list --cluster=CLUSTER_NAME NAME MACHINE_TYPE DISK_SIZE_GB NODE_VERSION pool1 n1-standard-1 100 1.
-    </div>
-  </div>
-</div>
-
-        </div>
-      
-        <div class="relative w-100  mb4 bg-white">
-          <div class="relative w-100 mb4 bg-white nested-copy-line-height">
-  <div class="bg-white mb3 pa4 gray overflow-hidden">
-    <span class="f6 db">Posts</span>
-    <h1 class="f3 near-black">
-      <a href="/blog/posts/tutorial-for-k8s-tls-setting/" class="link black dim">
-        Kubernetes で ingress controller を使って https (TLS) 接続をするチュートリアル
-      </a>
-    </h1>
-    <div class="nested-links f5 lh-copy nested-copy-line-height">
-      弊社ではKubernetesでDocker Containerを管理しています。
-レッスンタイムもそうですが、常時HTTPS接続をするために内部にnginx proxy の役割をするServiceを使っていました。
-ingress を使うと何がメリットかというと
-- 一つのingressで複数Serviceにまたがった設定ができる。
-- Serviceとして管理しないので分けて考えれる
-- Google 推奨の構成
-といったところですね。
-このチュートリアルでは
-1, ingressを使ってアプリケーションを公開する
-2, TLSの設定をして、https接続する。
-の二つを行いたいと思います。
-1, ingressを使ってアプリケーションを公開する 1.1, サービスを立ち上げる まずはingressを使わないでサービスを立ち上げれるかチェックします。
-こちらの公式ページがとてもわかりやすいのですが、Deployment から exposeして外部に公開してもいいし、Serviceを記述して公開してもいいです。
-例えばこういうDeploymentがあるとします。
-sandboxというnamespaceに一つアプリケーションを8080で公開する記述がされています。
-Rails だと3000ですね。
-apiVersion: apps/v1beta1 kind: Deployment metadata: name: test-app namespace: sandbox spec: replicas: 1 revisionHistoryLimit: 3 template: metadata: namespace: sandbox labels: run: test-app version: latest spec: containers: - name: test-app image: asia.gcr.io/project-id/image_name:latest ports: - containerPort: 8080  Terminal で
     </div>
   </div>
 </div>

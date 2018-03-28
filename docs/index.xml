@@ -6,10 +6,21 @@
     <description>Recent content on TO-ON Developer Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>ja-jp</language>
-    <lastBuildDate>Wed, 28 Mar 2018 09:08:18 +0900</lastBuildDate>
+    <lastBuildDate>Wed, 28 Mar 2018 09:21:40 +0900</lastBuildDate>
     
 	<atom:link href="https://lesson-time.github.io/blog/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Dockerで開発している時に不要になった image や container を全て削除する</title>
+      <link>https://lesson-time.github.io/blog/posts/remove-useless-docker-images-and-containers/</link>
+      <pubDate>Wed, 28 Mar 2018 09:21:40 +0900</pubDate>
+      
+      <guid>https://lesson-time.github.io/blog/posts/remove-useless-docker-images-and-containers/</guid>
+      <description> Docker を使っていると、docker 関係のファイルがたくさん生成され、PCのvolumeを圧迫していることがあります。
+そんな時は以下のコマンドを適宜活用すると数GB減らすことができるのでとても便利です。
+container の終了 $ docker kill [containerID]  不要な docker container の削除 $ docker rm $(docker ps -f status=exited -q)  不要な docker image の削除 $ docker rmi $(docker images -f dangling=true -q)  container に入る $ docker exec -it [containerID] /bin/bash  ログを見る $ docker logs -f [containerID]  </description>
+    </item>
     
     <item>
       <title>Kubernetes の pods を更新する方法</title>
