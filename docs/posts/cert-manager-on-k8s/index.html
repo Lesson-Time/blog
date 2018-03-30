@@ -27,12 +27,15 @@
     <meta property="og:title" content="Kubernetes 上で Cert Manager の設定の仕方" />
 <meta property="og:description" content="このブログでは Cluster の作成からアプリケーションのデプロイ、Ingress と Ingress Nginx Controller の設定、 Cert-manager の導入と Let&rsquo;s encrypt 導入を行います。
 どちらかというと、Cert-manager の導入と Let&rsquo;s encrypt 導入がメインですが、Kubernetes を使って、アプリケーションを動かす時に、 SSL/TLSの設定や Nginx の細かい設定を行えるようなチュートリアルになっています。
-Cluster の作成 Google Cloud Consoleから cluster を作成します。
-メニュー &gt; Kubernetes Engine から クラスタを作成 を押します。
-この際に 以前の承認 というところを有効にしておかないと、Kubernetes Dashboard をみるのに別の設定が必要になります。
-アプリケーションのデプロイ 好きなアプリケーションを作ってサクッとデプロイしてください。
-例えばこんなアプリを作成します。
-apiVersion: v1 kind: Service metadata: name: exmaple-app namespace: ltd labels: app: exmaple-app spec: type: LoadBalancer ports: - port: 8080 targetPort: 8080 protocol: TCP selector: app: exmaple-app --- apiVersion: apps/v1beta1 kind: Deployment metadata: name: exmaple-app namespace: default spec: replicas: 1 # Deployment ammount of history to keep revisionHistoryLimit: 3 template: metadata: namespace: default labels: app: exmaple-app version: latest spec: containers: - name: exmaple-app image: asia." />
+メニュー
+ Cluster の作成
+ アプリケーションのデプロイ
+ Ingress の設定
+ Ingress Controller の設定
+ Kubernetes Engine に Ingress nginx controller を deploy する
+ Cert-manager の設定
+ helm のインストール cert-manager のインストール let’s encrypt の設定 証明書の取得 HTTPS でアプリケーションを動かす   Cluster の作成 Google Cloud Consoleから cluster を作成します。
+メニュー &gt; Kubernetes Engine から クラスタを作成 を押します。" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://lesson-time.github.io/blog/posts/cert-manager-on-k8s/" />
 
@@ -55,17 +58,20 @@ apiVersion: v1 kind: Service metadata: name: exmaple-app namespace: ltd labels: 
 <meta itemprop="name" content="Kubernetes 上で Cert Manager の設定の仕方">
 <meta itemprop="description" content="このブログでは Cluster の作成からアプリケーションのデプロイ、Ingress と Ingress Nginx Controller の設定、 Cert-manager の導入と Let&rsquo;s encrypt 導入を行います。
 どちらかというと、Cert-manager の導入と Let&rsquo;s encrypt 導入がメインですが、Kubernetes を使って、アプリケーションを動かす時に、 SSL/TLSの設定や Nginx の細かい設定を行えるようなチュートリアルになっています。
-Cluster の作成 Google Cloud Consoleから cluster を作成します。
-メニュー &gt; Kubernetes Engine から クラスタを作成 を押します。
-この際に 以前の承認 というところを有効にしておかないと、Kubernetes Dashboard をみるのに別の設定が必要になります。
-アプリケーションのデプロイ 好きなアプリケーションを作ってサクッとデプロイしてください。
-例えばこんなアプリを作成します。
-apiVersion: v1 kind: Service metadata: name: exmaple-app namespace: ltd labels: app: exmaple-app spec: type: LoadBalancer ports: - port: 8080 targetPort: 8080 protocol: TCP selector: app: exmaple-app --- apiVersion: apps/v1beta1 kind: Deployment metadata: name: exmaple-app namespace: default spec: replicas: 1 # Deployment ammount of history to keep revisionHistoryLimit: 3 template: metadata: namespace: default labels: app: exmaple-app version: latest spec: containers: - name: exmaple-app image: asia.">
+メニュー
+ Cluster の作成
+ アプリケーションのデプロイ
+ Ingress の設定
+ Ingress Controller の設定
+ Kubernetes Engine に Ingress nginx controller を deploy する
+ Cert-manager の設定
+ helm のインストール cert-manager のインストール let’s encrypt の設定 証明書の取得 HTTPS でアプリケーションを動かす   Cluster の作成 Google Cloud Consoleから cluster を作成します。
+メニュー &gt; Kubernetes Engine から クラスタを作成 を押します。">
 
 
 <meta itemprop="datePublished" content="2018-03-28T16:39:37&#43;09:00" />
 <meta itemprop="dateModified" content="2018-03-28T16:39:37&#43;09:00" />
-<meta itemprop="wordCount" content="838">
+<meta itemprop="wordCount" content="869">
 
 
 
@@ -74,12 +80,15 @@ apiVersion: v1 kind: Service metadata: name: exmaple-app namespace: ltd labels: 
 <meta name="twitter:title" content="Kubernetes 上で Cert Manager の設定の仕方"/>
 <meta name="twitter:description" content="このブログでは Cluster の作成からアプリケーションのデプロイ、Ingress と Ingress Nginx Controller の設定、 Cert-manager の導入と Let&rsquo;s encrypt 導入を行います。
 どちらかというと、Cert-manager の導入と Let&rsquo;s encrypt 導入がメインですが、Kubernetes を使って、アプリケーションを動かす時に、 SSL/TLSの設定や Nginx の細かい設定を行えるようなチュートリアルになっています。
-Cluster の作成 Google Cloud Consoleから cluster を作成します。
-メニュー &gt; Kubernetes Engine から クラスタを作成 を押します。
-この際に 以前の承認 というところを有効にしておかないと、Kubernetes Dashboard をみるのに別の設定が必要になります。
-アプリケーションのデプロイ 好きなアプリケーションを作ってサクッとデプロイしてください。
-例えばこんなアプリを作成します。
-apiVersion: v1 kind: Service metadata: name: exmaple-app namespace: ltd labels: app: exmaple-app spec: type: LoadBalancer ports: - port: 8080 targetPort: 8080 protocol: TCP selector: app: exmaple-app --- apiVersion: apps/v1beta1 kind: Deployment metadata: name: exmaple-app namespace: default spec: replicas: 1 # Deployment ammount of history to keep revisionHistoryLimit: 3 template: metadata: namespace: default labels: app: exmaple-app version: latest spec: containers: - name: exmaple-app image: asia."/>
+メニュー
+ Cluster の作成
+ アプリケーションのデプロイ
+ Ingress の設定
+ Ingress Controller の設定
+ Kubernetes Engine に Ingress nginx controller を deploy する
+ Cert-manager の設定
+ helm のインストール cert-manager のインストール let’s encrypt の設定 証明書の取得 HTTPS でアプリケーションを動かす   Cluster の作成 Google Cloud Consoleから cluster を作成します。
+メニュー &gt; Kubernetes Engine から クラスタを作成 を押します。"/>
 
   </head>
 
@@ -164,6 +173,29 @@ apiVersion: v1 kind: Service metadata: name: exmaple-app namespace: ltd labels: 
 Cert-manager の導入と Let&rsquo;s encrypt 導入を行います。<br />
 どちらかというと、Cert-manager の導入と Let&rsquo;s encrypt 導入がメインですが、Kubernetes を使って、アプリケーションを動かす時に、
 SSL/TLSの設定や Nginx の細かい設定を行えるようなチュートリアルになっています。</p>
+
+<hr />
+
+<p>メニュー</p>
+
+<ul>
+<li><a href="#cluster-の作成">Cluster の作成</a><br /></li>
+<li><a href="#アプリケーションのデプロイ">アプリケーションのデプロイ</a><br /></li>
+<li><a href="#ingress-の設定">Ingress の設定</a><br /></li>
+<li><a href="#ingress-controller-の設定">Ingress Controller の設定</a><br /></li>
+<li><a href="#kubernetes-engine-に-ingress-nginx-controller-を-deploy-する">Kubernetes Engine に Ingress nginx controller を deploy する</a><br /></li>
+<li><a href="#cert-manager-の設定">Cert-manager の設定</a><br />
+
+<ul>
+<li><a href="#helm-のインストール">helm のインストール</a></li>
+<li><a href="#cert-manager-のインストール">cert-manager のインストール</a></li>
+<li><a href="#let-s-encrypt-の設定">let’s encrypt の設定</a></li>
+<li><a href="#証明書の取得">証明書の取得</a></li>
+<li><a href="#https-でアプリケーションを動かす">HTTPS でアプリケーションを動かす</a></li>
+</ul></li>
+</ul>
+
+<hr />
 
 <h2 id="cluster-の作成">Cluster の作成</h2>
 
@@ -295,14 +327,14 @@ spec:
 <h2 id="ingress-controller-の設定">Ingress Controller の設定</h2>
 
 <p>GCP上で ingress をあげると、デフォルトでは GCE という Ingress Controller が割り当てられます。
-ただ、nginx 上の細かい設定は <a href="https://github.com/kubernetes/ingress-nginx">Ingress nginx controller</a> のほうが得意なので、設定していきます。</p>
+ただ、nginx 上の細かい設定は <a href="https://github.com/kubernetes/ingress-nginx">Nginx Ingress Controller</a> のほうが得意なので、設定していきます。</p>
 
-<p>Ingress nginx controller を設置すると、Ingress に設定した条件を介して、nginx を使うようになります。</p>
+<p>Nginx Ingress Controller を設置すると、Ingress に設定した条件を介して、nginx を使うようになります。</p>
 
 <p><img src="https://storage.googleapis.com/gcp-community/tutorials/nginx-ingress-gke/Nginx%20Ingress%20on%20GCP%20-%20Fig%2002.png" alt="" />
 <a href="https://cloud.google.com/community/tutorials/nginx-ingress-gke">https://cloud.google.com/community/tutorials/nginx-ingress-gke</a> より</p>
 
-<p>Ingress nginx controllerをデプロイする方法は<a href="https://github.com/kubernetes/ingress-nginx/blob/master/deploy/README.md">こちら</a>が詳しいです。</p>
+<p>Nginx Ingress Controller をデプロイする方法は<a href="https://github.com/kubernetes/ingress-nginx/blob/master/deploy/README.md">こちら</a>が詳しいです。</p>
 
 <h3 id="kubernetes-engine-に-ingress-nginx-controller-を-deploy-する">Kubernetes Engine に Ingress nginx controller を deploy する。</h3>
 
@@ -386,7 +418,7 @@ spec:
 
 <p>[ Ingress Nginx Controller ] と [ Ingress ] と両方に IP が当てられていますが、
 [ Ingress ]のIPを使うと GCE の Ingress Controller を
-[ Ingress Nginx Controller ]のIPを使うと Ingress Nginx Controller を
+[ Ingress Nginx Controller ]のIPを使うと Nginx Ingress Controller を
 使うようになります。</p>
 
 <h2 id="cert-manager-の設定">Cert-manager の設定</h2>

@@ -10,6 +10,23 @@ Cert-manager の導入と Let's encrypt 導入を行います。
 どちらかというと、Cert-manager の導入と Let's encrypt 導入がメインですが、Kubernetes を使って、アプリケーションを動かす時に、
 SSL/TLSの設定や Nginx の細かい設定を行えるようなチュートリアルになっています。
 
+---
+メニュー
+
+- [Cluster の作成](#cluster-の作成)  
+- [アプリケーションのデプロイ](#アプリケーションのデプロイ)  
+- [Ingress の設定](#ingress-の設定)  
+- [Ingress Controller の設定](#ingress-controller-の設定)  
+- [Kubernetes Engine に Ingress nginx controller を deploy する](#kubernetes-engine-に-ingress-nginx-controller-を-deploy-する)  
+- [Cert-manager の設定](#cert-manager-の設定)  
+    - [helm のインストール](#helm-のインストール)
+    - [cert-manager のインストール](#cert-manager-のインストール)
+    - [let’s encrypt の設定](#let-s-encrypt-の設定)
+    - [証明書の取得](#証明書の取得)
+    - [HTTPS でアプリケーションを動かす](#https-でアプリケーションを動かす)
+
+---
+
 ## Cluster の作成
 
 [Google Cloud Console](https://console.cloud.google.com/)から cluster を作成します。  
@@ -143,15 +160,15 @@ spec:
 ## Ingress Controller の設定
 
 GCP上で ingress をあげると、デフォルトでは GCE という Ingress Controller が割り当てられます。 
-ただ、nginx 上の細かい設定は [Ingress nginx controller](https://github.com/kubernetes/ingress-nginx) のほうが得意なので、設定していきます。 
+ただ、nginx 上の細かい設定は [Nginx Ingress Controller](https://github.com/kubernetes/ingress-nginx) のほうが得意なので、設定していきます。 
 
-Ingress nginx controller を設置すると、Ingress に設定した条件を介して、nginx を使うようになります。
+Nginx Ingress Controller を設置すると、Ingress に設定した条件を介して、nginx を使うようになります。
 
 ![](https://storage.googleapis.com/gcp-community/tutorials/nginx-ingress-gke/Nginx%20Ingress%20on%20GCP%20-%20Fig%2002.png)
 https://cloud.google.com/community/tutorials/nginx-ingress-gke より
 
 
-Ingress nginx controllerをデプロイする方法は[こちら](https://github.com/kubernetes/ingress-nginx/blob/master/deploy/README.md)が詳しいです。
+Nginx Ingress Controller をデプロイする方法は[こちら](https://github.com/kubernetes/ingress-nginx/blob/master/deploy/README.md)が詳しいです。
 
 ### Kubernetes Engine に Ingress nginx controller を deploy する。
 
@@ -238,7 +255,7 @@ spec:
 
 [ Ingress Nginx Controller ] と [ Ingress ] と両方に IP が当てられていますが、
 [ Ingress ]のIPを使うと GCE の Ingress Controller を
-[ Ingress Nginx Controller ]のIPを使うと Ingress Nginx Controller を
+[ Ingress Nginx Controller ]のIPを使うと Nginx Ingress Controller を
 使うようになります。
 
 
