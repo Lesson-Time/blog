@@ -138,9 +138,7 @@ spec:
 
 保存したら cluster にあげます。
 
-    kubectl create -f ingress.yaml 
-    
-   
+    kubectl create -f ingress.yaml
 
 ## Ingress Controller の設定
 
