@@ -1,11 +1,14 @@
 ---
-title: "Cert Manager"
+title: "Kubernetes 上で Cert Manager の設定の仕方"
 date: 2018-03-28T16:39:37+09:00
-draft: true
+draft: false
+slug: "cert-manager-on-k8s"
 ---
 
-example.com
-
+このブログでは Cluster の作成からアプリケーションのデプロイ、Ingress と Ingress Nginx Controller の設定、
+Cert-manager の導入と Let's encrypt 導入を行います。  
+どちらかというと、Cert-manager の導入と Let's encrypt 導入がメインですが、Kubernetes を使って、アプリケーションを動かす時に、
+SSL/TLSの設定や Nginx の細かい設定を行えるようなチュートリアルになっています。
 
 ## Cluster の作成
 
@@ -142,6 +145,103 @@ spec:
 ## Ingress Controller の設定
 
 GCP上で ingress をあげると、デフォルトでは GCE という Ingress Controller が割り当てられます。 
+ただ、nginx 上の細かい設定は [Ingress nginx controller](https://github.com/kubernetes/ingress-nginx) のほうが得意なので、設定していきます。 
+
+Ingress nginx controller を設置すると、Ingress に設定した条件を介して、nginx を使うようになります。
+
+![](https://storage.googleapis.com/gcp-community/tutorials/nginx-ingress-gke/Nginx%20Ingress%20on%20GCP%20-%20Fig%2002.png)
+https://cloud.google.com/community/tutorials/nginx-ingress-gke より
+
+
+Ingress nginx controllerをデプロイする方法は[こちら](https://github.com/kubernetes/ingress-nginx/blob/master/deploy/README.md)が詳しいです。
+
+### Kubernetes Engine に Ingress nginx controller を deploy する。
+
+以下のコマンドを入力します。
+```bash
+curl https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/namespace.yaml \
+    | kubectl apply -f -
+
+curl https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/default-backend.yaml \
+    | kubectl apply -f -
+
+curl https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/configmap.yaml \
+    | kubectl apply -f -
+
+curl https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/tcp-services-configmap.yaml \
+    | kubectl apply -f -
+
+curl https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/udp-services-configmap.yaml \
+    | kubectl apply -f -
+```
+
+次にRBAC roles という権限付きでデプロイする場合は以下のコマンドを
+
+```bash
+curl https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/rbac.yaml \
+    | kubectl apply -f -
+
+curl https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/with-rbac.yaml \
+    | kubectl apply -f -
+```
+
+そうでない場合は以下のコマンドを入力します。
+```bash
+curl https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/without-rbac.yaml \
+    | kubectl apply -f -
+```
+
+Kubernetes Engine (GCE - GKE) では以下のコマンドを入力します。
+```bash
+kubectl patch deployment -n ingress-nginx nginx-ingress-controller --type='json' \
+  --patch="$(curl https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/publish-service-patch.yaml)"
+```
+
+次にRBAC なら
+```bash
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/provider/patch-service-with-rbac.yaml
+```
+
+そうでないなら
+```bash
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/provider/patch-service-without-rbac.yaml
+```
+
+きちんとデプロイできたら、ingress も変更しておきます。
+
+```yaml
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: ingress-example-com
+  namespace: default
+  annotations:
+    kubernetes.io/ingress.class: nginx  <= ここを gce から nginx に変更
+spec:
+  rules:
+  - host: example.com
+    http:
+      paths:
+      - backend:
+          serviceName: exmaple-app
+          servicePort: 8080
+```
+
+そうすると、ingress-nginx という名前で service が作られます。
+外部IPが振り当てられるので、DNSでそのIPを設定します。
+
+```
+              internet
+                 |
+   [ Ingress Nginx Controller ] ⇄ [ Ingress ]
+            --|-----|--
+            [ Services ]
+```
+
+[ Ingress Nginx Controller ] と [ Ingress ] と両方に IP が当てられていますが、
+[ Ingress ]のIPを使うと GCE の Ingress Controller を
+[ Ingress Nginx Controller ]のIPを使うと Ingress Nginx Controller を
+使うようになります。
 
 
 

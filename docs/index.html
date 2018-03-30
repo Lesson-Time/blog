@@ -34,7 +34,7 @@
 
 
 
-<meta property="og:updated_time" content="2018-03-28T09:21:40&#43;09:00"/>
+<meta property="og:updated_time" content="2018-03-28T16:39:37&#43;09:00"/>
 
 
 
@@ -160,6 +160,37 @@
       
       <div class="blah w-100">
         <h1 class="f3 fw1 athelas mt0 lh-title">
+          <a href="/blog/posts/cert-manager-on-k8s/" class="color-inherit dim link">
+            Kubernetes 上で Cert Manager の設定の仕方
+            </a>
+        </h1>
+        <div class="f6 f5-l lh-copy nested-copy-line-height nested-links">
+          このブログでは Cluster の作成からアプリケーションのデプロイ、Ingress と Ingress Nginx Controller の設定、 Cert-manager の導入と Let&rsquo;s encrypt 導入を行います。
+どちらかというと、Cert-manager の導入と Let&rsquo;s encrypt 導入がメインですが、Kubernetes を使って、アプリケーションを動かす時に、 SSL/TLSの設定や Nginx の細かい設定を行えるようなチュートリアルになっています。
+Cluster の作成 Google Cloud Consoleから cluster を作成します。
+メニュー &gt; Kubernetes Engine から クラスタを作成 を押します。
+この際に 以前の承認 というところを有効にしておかないと、Kubernetes Dashboard をみるのに別の設定が必要になります。
+アプリケーションのデプロイ 好きなアプリケーションを作ってサクッとデプロイしてください。
+例えばこんなアプリを作成します。
+apiVersion: v1 kind: Service metadata: name: exmaple-app namespace: ltd labels: app: exmaple-app spec: type: LoadBalancer ports: - port: 8080 targetPort: 8080 protocol: TCP selector: app: exmaple-app --- apiVersion: apps/v1beta1 kind: Deployment metadata: name: exmaple-app namespace: default spec: replicas: 1 # Deployment ammount of history to keep revisionHistoryLimit: 3 template: metadata: namespace: default labels: app: exmaple-app version: latest spec: containers: - name: exmaple-app image: asia.
+        </div>
+          <a href="/blog/posts/cert-manager-on-k8s/" class="ba b--moon-gray bg-light-gray br2 color-inherit dib f7 hover-bg-moon-gray link mt2 ph2 pv1">もっと読む</a>
+        
+      </div>
+    </div>
+  </div>
+</article>
+
+          </div>
+        
+          <div class="relative w-100 mb4">
+            
+<article class="bb b--black-10">
+  <div class="db pv4 ph3 ph0-l no-underline dark-gray">
+    <div class="flex flex-column flex-row-ns">
+      
+      <div class="blah w-100">
+        <h1 class="f3 fw1 athelas mt0 lh-title">
           <a href="/blog/posts/remove-useless-docker-images-and-containers/" class="color-inherit dim link">
             Dockerで開発している時に不要になった image や container を全て削除する
             </a>
@@ -178,41 +209,18 @@ container の終了 $ docker kill [containerID]  不要な docker container の�
 
           </div>
         
-          <div class="relative w-100 mb4">
-            
-<article class="bb b--black-10">
-  <div class="db pv4 ph3 ph0-l no-underline dark-gray">
-    <div class="flex flex-column flex-row-ns">
-      
-      <div class="blah w-100">
-        <h1 class="f3 fw1 athelas mt0 lh-title">
-          <a href="/blog/posts/how-to-update-k8s-pods/" class="color-inherit dim link">
-            Kubernetes の pods を更新する方法
-            </a>
-        </h1>
-        <div class="f6 f5-l lh-copy nested-copy-line-height nested-links">
-          ローカルからDocker image を Build して、 GCRにpush, k8sのアプリケーションを変更する方法を記述します。
-Build docker build --rm -t asia.gcr.io/sample-project/example:v1 .  --rm はビルド成功後中間コンテナを削除するオプションです。-tはタグをイメージにつけることができます。
-この場合は v1を asia.gcr.io/sample-project/example に付与しています。
-Test (RUN) docker run --rm -it -P asia.gcr.io/sample-project/example:v1 .  インタラクティブなプロセスでは、コンテナのプロセスに対して tty を割り当てるために、 -i -t を一緒に使う必要があります。
-Upload gcloud docker -- push asia.gcr.io/sample-project/example:v1  gcloud をインストールしている必要があります。
-Deploy kubectl set image deployment/example example=asia.gcr.io/sample-project/example:v1 -n your-namespace kubectl rollout status deployment/example -n your-namespace  set image で deployment に新しいイメージを付与して、 rollout コマンドでpodの更新をします。
-        </div>
-          <a href="/blog/posts/how-to-update-k8s-pods/" class="ba b--moon-gray bg-light-gray br2 color-inherit dib f7 hover-bg-moon-gray link mt2 ph2 pv1">もっと読む</a>
-        
-      </div>
-    </div>
-  </div>
-</article>
-
-          </div>
-        
       </section>
 
       
       <section class="w-100">
         <h1 class="f3">More</h1>
         
+        
+          <h2 class="f5 fw4 mb4 dib mr3">
+            <a href="/blog/posts/how-to-update-k8s-pods/" class="link black dim">
+              Kubernetes の pods を更新する方法
+            </a>
+          </h2>
         
           <h2 class="f5 fw4 mb4 dib mr3">
             <a href="/blog/posts/node-pool-update/" class="link black dim">
