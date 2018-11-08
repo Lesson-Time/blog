@@ -1,4 +1,4 @@
-baseURL = "https://lesson-time.github.io/blog/"
+baseURL = "https://blog.lesson-time.com"
 languageCode = "ja-jp"
 title = "TO-ON Developer Blog"
 theme = "gohugo-theme-ananke"
