@@ -3,6 +3,7 @@ languageCode = "ja-jp"
 title = "TO-ON Developer Blog"
 theme = "gohugo-theme-ananke"
 publishDir = "docs"
+canonifyurls = true
 
 MetaDataFormat = "yaml"
 DefaultContentLanguage = "en"
