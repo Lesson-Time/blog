@@ -3,69 +3,69 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
-    <loc>https://lesson-time.github.io/blog/posts/cert-manager-on-k8s/</loc>
+    <loc>https://blog.lesson-time.com/posts/cert-manager-on-k8s/</loc>
     <lastmod>2018-03-28T16:39:37+09:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>https://lesson-time.github.io/blog/posts/remove-useless-docker-images-and-containers/</loc>
+    <loc>https://blog.lesson-time.com/posts/remove-useless-docker-images-and-containers/</loc>
     <lastmod>2018-03-28T09:21:40+09:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>https://lesson-time.github.io/blog/posts/how-to-update-k8s-pods/</loc>
+    <loc>https://blog.lesson-time.com/posts/how-to-update-k8s-pods/</loc>
     <lastmod>2018-03-28T09:08:18+09:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>https://lesson-time.github.io/blog/posts/node-pool-update/</loc>
+    <loc>https://blog.lesson-time.com/posts/node-pool-update/</loc>
     <lastmod>2018-02-15T15:16:31+09:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>https://lesson-time.github.io/blog/posts/tutorial-for-k8s-tls-setting/</loc>
+    <loc>https://blog.lesson-time.com/posts/tutorial-for-k8s-tls-setting/</loc>
     <lastmod>2018-02-07T18:57:41+09:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>https://lesson-time.github.io/blog/posts/insufficient-authentication-scopes/</loc>
+    <loc>https://blog.lesson-time.com/posts/insufficient-authentication-scopes/</loc>
     <lastmod>2018-02-07T18:49:38+09:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>https://lesson-time.github.io/blog/categories/</loc>
+    <loc>https://blog.lesson-time.com/categories/</loc>
     <changefreq>monthly</changefreq>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>https://lesson-time.github.io/blog/posts/</loc>
+    <loc>https://blog.lesson-time.com/posts/</loc>
     <lastmod>2018-03-28T16:39:37+09:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>https://lesson-time.github.io/blog/</loc>
+    <loc>https://blog.lesson-time.com/</loc>
     <lastmod>2018-03-28T16:39:37+09:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>https://lesson-time.github.io/blog/tags/</loc>
+    <loc>https://blog.lesson-time.com/tags/</loc>
     <changefreq>monthly</changefreq>
     <priority>0</priority>
   </url>

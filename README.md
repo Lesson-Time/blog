@@ -65,6 +65,10 @@ https://themes.gohugo.io/
     cd themes/
     git clone https://github.com/hivickylai/hugo-theme-introduction
 
+    # Edit your config.toml configuration file
+    # and add the hugo-theme-introduction theme.
+    echo 'theme = "hugo-theme-introduction"' >> config.toml
+
 And then open up config.toml in a text editor:
 
     baseURL = "https://example.org/"

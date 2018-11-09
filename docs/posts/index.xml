@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Posts on TO-ON Developer Blog</title>
-    <link>https://lesson-time.github.io/blog/posts/</link>
+    <link>https://blog.lesson-time.com/posts/</link>
     <description>Recent content in Posts on TO-ON Developer Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>ja-jp</language>
     <lastBuildDate>Wed, 28 Mar 2018 16:39:37 +0900</lastBuildDate>
     
-	<atom:link href="https://lesson-time.github.io/blog/posts/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://blog.lesson-time.com/posts/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Kubernetes 上で Cert Manager の設定の仕方</title>
-      <link>https://lesson-time.github.io/blog/posts/cert-manager-on-k8s/</link>
+      <link>https://blog.lesson-time.com/posts/cert-manager-on-k8s/</link>
       <pubDate>Wed, 28 Mar 2018 16:39:37 +0900</pubDate>
       
-      <guid>https://lesson-time.github.io/blog/posts/cert-manager-on-k8s/</guid>
+      <guid>https://blog.lesson-time.com/posts/cert-manager-on-k8s/</guid>
       <description>このブログでは Cluster の作成からアプリケーションのデプロイ、Ingress と Ingress Nginx Controller の設定、 Cert-manager の導入と Let&amp;rsquo;s encrypt 導入を行います。
 どちらかというと、Cert-manager の導入と Let&amp;rsquo;s encrypt 導入がメインですが、Kubernetes を使って、アプリケーションを動かす時に、 SSL/TLSの設定や Nginx の細かい設定を行えるようなチュートリアルになっています。
 メニュー
@@ -32,10 +32,10 @@
     
     <item>
       <title>Dockerで開発している時に不要になった image や container を全て削除する</title>
-      <link>https://lesson-time.github.io/blog/posts/remove-useless-docker-images-and-containers/</link>
+      <link>https://blog.lesson-time.com/posts/remove-useless-docker-images-and-containers/</link>
       <pubDate>Wed, 28 Mar 2018 09:21:40 +0900</pubDate>
       
-      <guid>https://lesson-time.github.io/blog/posts/remove-useless-docker-images-and-containers/</guid>
+      <guid>https://blog.lesson-time.com/posts/remove-useless-docker-images-and-containers/</guid>
       <description> Docker を使っていると、docker 関係のファイルがたくさん生成され、PCのvolumeを圧迫していることがあります。
 そんな時は以下のコマンドを適宜活用すると数GB減らすことができるのでとても便利です。
 container の終了 $ docker kill [containerID]  不要な docker container の削除 $ docker rm $(docker ps -f status=exited -q)  不要な docker image の削除 $ docker rmi $(docker images -f dangling=true -q)  container に入る $ docker exec -it [containerID] /bin/bash  ログを見る $ docker logs -f [containerID]  </description>
@@ -43,10 +43,10 @@ container の終了 $ docker kill [containerID]  不要な docker container の�
     
     <item>
       <title>Kubernetes の pods を更新する方法</title>
-      <link>https://lesson-time.github.io/blog/posts/how-to-update-k8s-pods/</link>
+      <link>https://blog.lesson-time.com/posts/how-to-update-k8s-pods/</link>
       <pubDate>Wed, 28 Mar 2018 09:08:18 +0900</pubDate>
       
-      <guid>https://lesson-time.github.io/blog/posts/how-to-update-k8s-pods/</guid>
+      <guid>https://blog.lesson-time.com/posts/how-to-update-k8s-pods/</guid>
       <description>ローカルからDocker image を Build して、 GCRにpush, k8sのアプリケーションを変更する方法を記述します。
 Build docker build --rm -t asia.gcr.io/sample-project/example:v1 .  --rm はビルド成功後中間コンテナを削除するオプションです。-tはタグをイメージにつけることができます。
 この場合は v1を asia.gcr.io/sample-project/example に付与しています。
@@ -57,10 +57,10 @@ Deploy kubectl set image deployment/example example=asia.gcr.io/sample-project/e
     
     <item>
       <title>kubernetes の node のバージョンアップをダウンタイムなしで実行する</title>
-      <link>https://lesson-time.github.io/blog/posts/node-pool-update/</link>
+      <link>https://blog.lesson-time.com/posts/node-pool-update/</link>
       <pubDate>Thu, 15 Feb 2018 15:16:31 +0900</pubDate>
       
-      <guid>https://lesson-time.github.io/blog/posts/node-pool-update/</guid>
+      <guid>https://blog.lesson-time.com/posts/node-pool-update/</guid>
       <description>node pool の概要はこちらです。
 https://cloud.google.com/container-engine/docs/node-pools?hl=ja
 今回は1.6.4から1.6.6にバージョンアップをします。
@@ -78,10 +78,10 @@ $ gcloud container node-pools list --cluster=CLUSTER_NAME NAME MACHINE_TYPE DISK
     
     <item>
       <title>Kubernetes で ingress controller を使って https (TLS) 接続をするチュートリアル</title>
-      <link>https://lesson-time.github.io/blog/posts/tutorial-for-k8s-tls-setting/</link>
+      <link>https://blog.lesson-time.com/posts/tutorial-for-k8s-tls-setting/</link>
       <pubDate>Wed, 07 Feb 2018 18:57:41 +0900</pubDate>
       
-      <guid>https://lesson-time.github.io/blog/posts/tutorial-for-k8s-tls-setting/</guid>
+      <guid>https://blog.lesson-time.com/posts/tutorial-for-k8s-tls-setting/</guid>
       <description>弊社ではKubernetesでDocker Containerを管理しています。
 レッスンタイムもそうですが、常時HTTPS接続をするために内部にnginx proxy の役割をするServiceを使っていました。
 ingress を使うと何がメリットかというと
@@ -103,10 +103,10 @@ apiVersion: apps/v1beta1 kind: Deployment metadata: name: test-app namespace: sa
     
     <item>
       <title>GCPで 「Request had insufficient authentication scopes.」と怒られた時の対処法</title>
-      <link>https://lesson-time.github.io/blog/posts/insufficient-authentication-scopes/</link>
+      <link>https://blog.lesson-time.com/posts/insufficient-authentication-scopes/</link>
       <pubDate>Wed, 07 Feb 2018 18:49:38 +0900</pubDate>
       
-      <guid>https://lesson-time.github.io/blog/posts/insufficient-authentication-scopes/</guid>
+      <guid>https://blog.lesson-time.com/posts/insufficient-authentication-scopes/</guid>
       <description>GCEでオープンソースの Drone.io を動かしていて、そこから GKE にアクセスしています。
 今回新しく cluster を作成して、そこにdroneのGCEからアクセスしようと思ったのですが、以下のように怒られました。
 $ gcloud container clusters get-credentials test-cluster (gcloud.container.clusters.get-credentials) ResponseError: code=403, message=Request had insufficient authentication scopes.&amp;quot;  色々探してみたのですが、このエラーは簡単にいうと パーミッションがない ということです。
